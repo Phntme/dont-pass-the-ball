@@ -1,7 +1,5 @@
 const gameCanvas = document.getElementById("game-canvas");
 const ctx = gameCanvas.getContext("2d");
-let ballX = 175;
-const velocityX = 2;
 
 let ball = {
   x: 175,
@@ -14,6 +12,16 @@ let ball = {
 function update() {
   ball.x += ball.vx;
   ball.y += ball.vy;
+
+  // aadb collision
+  //   check ball x position
+  if (ball.x + ball.r > gameCanvas.width || ball.x - ball.r < 0) {
+    ball.vx *= -1;
+  }
+  //   check ball y position
+  if (ball.y + ball.r > gameCanvas.height || ball.y - ball.r < 0) {
+    ball.vy *= -1;
+  }
 }
 
 function draw() {
