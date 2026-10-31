@@ -1,6 +1,15 @@
 const gameCanvas = document.getElementById("game-canvas");
 const ctx = gameCanvas.getContext("2d");
 const friction = 0.99;
+gameCanvas.style.cursor = "grab";
+
+// user input init
+let startX = 0;
+let startY = 0;
+
+let isDragging = false;
+let currentY = 0;
+let currentX = 0;
 
 let ball = {
   x: 175,
@@ -55,23 +64,39 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// user input init
-let startX = 0;
-let startY = 0;
-
 // mouse interact function
 gameCanvas.addEventListener("mousedown", (e) => {
-  console.log(e.offsetX);
+  isDragging = true;
+  gameCanvas.style.cursor = "grabbing";
   startX = e.offsetX;
   startY = e.offsetY;
+
+  currentX = startX;
+  currentY = startY;
 });
 
 gameCanvas.addEventListener("mouseup", (e) => {
-  console.log(e.offsetX);
-  let dx = startX - e.offsetX;
-  let dy = startY - e.offsetY;
+  if (isDragging) {
+    isDragging = false;
+    gameCanvas.style.cursor = "grab";
+    let dx = startX - e.offsetX;
+    let dy = startY - e.offsetY;
 
-  ball.vx = dx * 0.1;
-  ball.vy = dy * 0.1;
+    ball.vx = dx * 0.1;
+    ball.vy = dy * 0.1;
+  }
+});
+
+gameCanvas.addEventListener("mousemove", (e) => {
+  if (isDragging) {
+    currentX = e.offsetX;
+    currentY = e.offsetY;
+  }
+});
+
+gameCanvas.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  isDragging = false;
+  gameCanvas.style.cursor = "grab";
 });
 gameLoop();
