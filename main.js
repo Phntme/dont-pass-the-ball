@@ -4,10 +4,10 @@ const friction = 0.99;
 
 let ball = {
   x: 175,
-  y: 385,
+  y: 300,
   r: 20,
-  vx: 50,
-  vy: 50,
+  vx: 0,
+  vy: 0,
 };
 
 function update() {
@@ -55,4 +55,23 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+// user input init
+let startX = 0;
+let startY = 0;
+
+// mouse interact function
+gameCanvas.addEventListener("mousedown", (e) => {
+  console.log(e.offsetX);
+  startX = e.offsetX;
+  startY = e.offsetY;
+});
+
+gameCanvas.addEventListener("mouseup", (e) => {
+  console.log(e.offsetX);
+  let dx = startX - e.offsetX;
+  let dy = startY - e.offsetY;
+
+  ball.vx = dx * 0.1;
+  ball.vy = dy * 0.1;
+});
 gameLoop();
