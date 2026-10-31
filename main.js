@@ -8,6 +8,7 @@ let startX = 0;
 let startY = 0;
 
 let isDragging = false;
+let isMove = false;
 let currentY = 0;
 let currentX = 0;
 
@@ -44,6 +45,13 @@ function update() {
     ball.y = ball.r;
     ball.vy *= -1;
   }
+
+  // check movement bola
+  if (Math.abs(ball.vy) < 0.1 && Math.abs(ball.vx) < 0.1) {
+    ball.vy = 0;
+    ball.vx = 0;
+    isMove = false;
+  }
 }
 
 function draw() {
@@ -56,6 +64,54 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
   ctx.fill();
+
+  // draw line aim
+  if (isDragging) {
+    // ghost ball
+    let gvx = (startX - currentX) * 0.1;
+    let gvy = (startY - currentY) * 0.1;
+
+    let gx = ball.x;
+    let gy = ball.y;
+
+    // draw
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+
+    for (let i = 0; i < 100; i++) {
+      gx += gvx;
+      gy += gvy;
+
+      gvx *= friction;
+      gvy *= friction;
+
+      // ghost aadb collision
+      // check ball x position
+      if (gx + ball.r > gameCanvas.width) {
+        gx = gameCanvas.width - ball.r;
+        gvx *= -1;
+      } else if (gx - ball.r < 0) {
+        gx = ball.r;
+        gvx *= -1;
+      }
+      // check ball y position
+      if (gy + ball.r > gameCanvas.height) {
+        gy = gameCanvas.height - ball.r;
+        gvy *= -1;
+      } else if (gy - ball.r < 0) {
+        gy = ball.r;
+        gvy *= -1;
+      }
+
+      ctx.lineTo(gx, gy);
+    }
+
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = "3";
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
 }
 
 function gameLoop() {
@@ -66,13 +122,15 @@ function gameLoop() {
 
 // mouse interact function
 gameCanvas.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  gameCanvas.style.cursor = "grabbing";
-  startX = e.offsetX;
-  startY = e.offsetY;
+  if (!isMove) {
+    isDragging = true;
+    gameCanvas.style.cursor = "grabbing";
+    startX = e.offsetX;
+    startY = e.offsetY;
 
-  currentX = startX;
-  currentY = startY;
+    currentX = startX;
+    currentY = startY;
+  }
 });
 
 gameCanvas.addEventListener("mouseup", (e) => {
@@ -84,6 +142,7 @@ gameCanvas.addEventListener("mouseup", (e) => {
 
     ball.vx = dx * 0.1;
     ball.vy = dy * 0.1;
+    isMove = true;
   }
 });
 
