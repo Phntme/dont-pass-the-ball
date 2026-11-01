@@ -12,13 +12,37 @@ let isMove = false;
 let currentY = 0;
 let currentX = 0;
 
+// bola
 let ball = {
   x: 175,
   y: 300,
-  r: 20,
+  r: 15,
   vx: 0,
   vy: 0,
 };
+
+// bumper
+let bumper = {
+  x: 300,
+  y: 150,
+  w: 20,
+  h: 300,
+  color: "#2D3047",
+};
+
+// lubang
+let hole = {
+  x: 700,
+  y: 300,
+  r: 20,
+  color: "#FFDBB5",
+};
+
+//nyawa
+let lives = 3;
+
+// uang
+let cash = 0;
 
 function update() {
   ball.x += ball.vx;
@@ -56,8 +80,18 @@ function update() {
 
 function draw() {
   // update lapangan golf
-  ctx.fillStyle = "green";
+  ctx.fillStyle = "#419D78";
   ctx.fillRect(0, 0, 800, 600);
+
+  // draw bumper
+  ctx.fillStyle = bumper.color;
+  ctx.fillRect(bumper.x, bumper.y, bumper.w, bumper.h);
+
+  // draw hole
+  ctx.beginPath();
+  ctx.fillStyle = hole.color;
+  ctx.arc(hole.x, hole.y, hole.r, 0, Math.PI * 2);
+  ctx.fill();
 
   // update bola
   ctx.beginPath();
@@ -78,7 +112,7 @@ function draw() {
     ctx.beginPath();
     ctx.moveTo(gx, gy);
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 48; i++) {
       gx += gvx;
       gy += gvy;
 
